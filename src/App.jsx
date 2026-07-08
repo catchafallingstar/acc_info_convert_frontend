@@ -154,7 +154,7 @@ function App() {
       {/* Content Results Display Section */}
       {result && (
         <div style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: '8px', padding: '25px', color: '#212529' }}>
-          <h2 style={{ marginTop: '0', color: '#007bff' }}>AI Structured Description:</h2>
+          <h2 style={{ marginTop: '0', color: '#007bff' }}>Accessible Description:</h2>
           <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'inherit', lineHeight: '1.6', background: '#f8f9fa', padding: '15px', borderRadius: '4px' }}>
             {result}
           </pre>
