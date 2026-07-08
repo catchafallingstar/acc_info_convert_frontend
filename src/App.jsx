@@ -93,33 +93,67 @@ function App() {
     element.click();
     document.body.removeChild(element);
   };
-  const handleDownloadPDF = () => {
-    // 1. Create a new PDF document (portrait, standard A4 size)
+  const handleDownloadPDF = async () => {
+    // 1. Create a new PDF document
     const doc = new jsPDF();
+    const pageHeight = 250;     // Standard B5 page height in mm
+    const bottomMargin = 25;    // Safe margin to trigger a new page
+    const lineHeight = 7;       // Spacing between text rows
+    let yPosition = 30;         // Starting cursor position for text
 
-    // 2. Add a proper Heading (This helps with structure)
+    // 2. Add the Main Title Header
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text("Accessible Image Description", 20, 20);
 
-    // 3. Add the AI-Generated Text
-    // We use splitTextToSize so the text wraps neatly and doesn't run off the page!
+    // 3. Configure Text Body Styles
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    const wrappedText = doc.splitTextToSize(result, 170); // Adjust 'aiGeneratedText' to whatever your state variable is named!
-    doc.text(wrappedText, 20, 30);
+    const wrappedText = doc.splitTextToSize(result, 170); 
 
-    // 4. Calculate where the text ends so we can put the image below it
-    const textHeight = wrappedText.length * 7;
-    const imageYPosition = 30 + textHeight + 10;
-
-    // 5. Add the original image (Assuming you have the image saved in a state variable like 'selectedImage')
-    // We have to convert the image file to a URL the PDF can read
-    if (selectedImage) {
-      // We pass selectedImage straight into jsPDF without converting it!
-      doc.addImage(selectedImage, imageFormat, 20, imageYPosition, 150, 100);
+    // 4. Line-by-Line Pagination Loop
+    // This loops through every line of text. If it hits the bottom margin, 
+    // it automatically spawns a new page and resets the cursor to the top!
+    for (let i = 0; i < wrappedText.length; i++) {
+      if (yPosition > pageHeight - bottomMargin) {
+        doc.addPage();
+        yPosition = 20; // Reset cursor to the top margin of the new page
+      }
+      doc.text(wrappedText[i], 20, yPosition);
+      yPosition += lineHeight;
     }
-    // 6. Trigger the download!
+
+    // 5. Securely Render the Original Image on a Fresh Page
+    // Pushing the image to its own dedicated page ensures it never collides 
+    // with long text descriptions, keeping your layout clean and structured.
+    if (selectedImage) {
+      doc.addPage(); // Open a clean sheet at the end of the document
+      
+      // Section Header for the graphic
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Original Infographic Source", 20, 20);
+
+      try {
+        // Resolve Blob URL: Create an in-memory HTML Image element to safely unpack the pixels
+        const img = new Image();
+        img.src = selectedImage;
+
+        // Wait for the browser to successfully load the image data
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = () => reject(new Error("Image failed to render into canvas context"));
+        });
+
+        // Insert the graphic perfectly onto the page
+        // Parameters: source, format, x, y, width, height
+        doc.addImage(img, imageFormat, 20, 30, 170, 115);
+      } catch (error) {
+        console.error("PDF Image processing error:", error);
+      }
+    }
+
+    // 6. Save and execute downlad!
     doc.save("Accessible_Narrative.pdf");
   };
 
