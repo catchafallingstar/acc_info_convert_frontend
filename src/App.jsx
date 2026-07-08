@@ -94,7 +94,7 @@ function App() {
     // We use splitTextToSize so the text wraps neatly and doesn't run off the page!
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    const wrappedText = doc.splitTextToSize(aiGeneratedText, 170); // Adjust 'aiGeneratedText' to whatever your state variable is named!
+    const wrappedText = doc.splitTextToSize(result, 170); // Adjust 'aiGeneratedText' to whatever your state variable is named!
     doc.text(wrappedText, 20, 30);
 
     // 4. Calculate where the text ends so we can put the image below it
