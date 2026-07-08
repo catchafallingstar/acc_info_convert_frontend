@@ -59,6 +59,11 @@ function App() {
       const data = await response.json();
 
       if (response.ok && data.generated_text) {
+        if (data.generated_text.includes("VALIDATION_ERROR:")) {
+          setStatus("Upload Rejected: This image does not appear to be a flowchart or infographic.");
+          setResult("Error: The platform requires an infographic, diagram, or flowchart layout to generate a meaningful structural narrative.");
+          return; // This stops the function early so it doesn't say "Complete!"
+        }
         setResult(data.generated_text);
         setStatus('Complete! Accessible structure generated successfully.');
       } else {
@@ -104,13 +109,9 @@ function App() {
     // 5. Add the original image (Assuming you have the image saved in a state variable like 'selectedImage')
     // We have to convert the image file to a URL the PDF can read
     if (selectedImage) {
-      const imageUrl = URL.createObjectURL(selectedImage);
-
-      // Add the image to the PDF: (image source, format, X pos, Y pos, width, height)
-      // Note: You might need to tweak the width/height (150x100) to fit your design
-      doc.addImage(imageUrl, "JPEG", 20, imageYPosition, 150, 100);
+      // We pass selectedImage straight into jsPDF without converting it!
+      doc.addImage(selectedImage, "JPEG", 20, imageYPosition, 150, 100);
     }
-
     // 6. Trigger the download!
     doc.save("Accessible_Narrative.pdf");
   };
