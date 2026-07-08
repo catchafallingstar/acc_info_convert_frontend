@@ -10,14 +10,21 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [status, setStatus] = useState('Waiting for an infographic upload...');
   const [result, setResult] = useState('');
-
+  const [imageFormat, setImageFormat] = useState('JPEG');
   // 1. Handle when a user selects an image file
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
+      
+      //  Detect the format automatically (e.g., "png", "jpeg", "webp")
+      // We extract the second part of the mime-type and make it uppercase
+      const detectedFormat = file.type.split('/')[1]?.toUpperCase() || 'JPEG';
+      // jsPDF expects 'JPEG', not 'JPG'
+      setImageFormat(detectedFormat === 'JPG' ? 'JPEG' : detectedFormat);
+
       setStatus('Image loaded. Click the convert button below!');
-      setResult(''); // Clear previous runs
+      setResult(''); 
     }
   };
 
@@ -110,7 +117,7 @@ function App() {
     // We have to convert the image file to a URL the PDF can read
     if (selectedImage) {
       // We pass selectedImage straight into jsPDF without converting it!
-      doc.addImage(selectedImage, "JPEG", 20, imageYPosition, 150, 100);
+      doc.addImage(selectedImage, imageFormat, 20, imageYPosition, 150, 100);
     }
     // 6. Trigger the download!
     doc.save("Accessible_Narrative.pdf");
