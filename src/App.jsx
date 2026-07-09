@@ -190,7 +190,7 @@ function App() {
 
       {/* Live Operational Status Box */}
       <div style={{ padding: '12px', background: '#e9ecef', borderRadius: '4px', borderLeft: '5px solid #6c757d', marginBottom: '30px', color: '#333' }}>
-        <strong>Current State:</strong> {status}
+        <strong>Current Status:</strong> {status}
       </div>
 
       {/* Content Results Display Section */}
