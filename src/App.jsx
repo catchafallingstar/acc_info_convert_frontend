@@ -16,7 +16,7 @@ function App() {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
-      
+
       //  Detect the format automatically (e.g., "png", "jpeg", "webp")
       // We extract the second part of the mime-type and make it uppercase
       const detectedFormat = file.type.split('/')[1]?.toUpperCase() || 'JPEG';
@@ -24,7 +24,7 @@ function App() {
       setImageFormat(detectedFormat === 'JPG' ? 'JPEG' : detectedFormat);
 
       setStatus('Image loaded. Click the convert button below!');
-      setResult(''); 
+      setResult('');
     }
   };
 
@@ -94,67 +94,44 @@ function App() {
     document.body.removeChild(element);
   };
   const handleDownloadPDF = async () => {
-    // 1. Create a new PDF document
-    const doc = new jsPDF();
-    const pageHeight = 250;     // Standard B5 page height in mm
-    const bottomMargin = 25;    // Safe margin to trigger a new page
-    const lineHeight = 7;       // Spacing between text rows
-    let yPosition = 30;         // Starting cursor position for text
+    try {
+      // 1. Send the data to your new Django endpoint
+      // Adjust the URL if your Django server runs on a different port/address
+      const response = await fetch('http://localhost:8000/api/generate-pdf/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          narrative: result,       // The raw markdown text from Gemini
+          image: selectedImage     // The base64 URL of the uploaded image
+        }),
+      });
 
-    // 2. Add the Main Title Header
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("Accessible Image Description", 20, 20);
-
-    // 3. Configure Text Body Styles
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    const wrappedText = doc.splitTextToSize(result, 170); 
-
-    // 4. Line-by-Line Pagination Loop
-    // This loops through every line of text. If it hits the bottom margin, 
-    // it automatically spawns a new page and resets the cursor to the top!
-    for (let i = 0; i < wrappedText.length; i++) {
-      if (yPosition > pageHeight - bottomMargin) {
-        doc.addPage();
-        yPosition = 20; // Reset cursor to the top margin of the new page
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF on the server.');
       }
-      doc.text(wrappedText[i], 20, yPosition);
-      yPosition += lineHeight;
+
+      // 2. Convert the backend response into a downloadable file blob
+      const blob = await response.blob();
+
+      // 3. Create a temporary ghost link to trigger the browser download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'Accessible_Narrative.pdf';
+      document.body.appendChild(a);
+
+      // 4. Click the link and clean up
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+    } catch (error) {
+      console.error("PDF Generation Error:", error);
+      alert("There was a problem generating your PDF. Please try again.");
     }
-
-    // 5. Securely Render the Original Image on a Fresh Page
-    // Pushing the image to its own dedicated page ensures it never collides 
-    // with long text descriptions, keeping your layout clean and structured.
-    if (selectedImage) {
-      doc.addPage(); // Open a clean sheet at the end of the document
-      
-      // Section Header for the graphic
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text("Original Infographic Source", 20, 20);
-
-      try {
-        // Resolve Blob URL: Create an in-memory HTML Image element to safely unpack the pixels
-        const img = new Image();
-        img.src = selectedImage;
-
-        // Wait for the browser to successfully load the image data
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = () => reject(new Error("Image failed to render into canvas context"));
-        });
-
-        // Insert the graphic perfectly onto the page
-        // Parameters: source, format, x, y, width, height
-        doc.addImage(img, imageFormat, 20, 30, 170, 115);
-      } catch (error) {
-        console.error("PDF Image processing error:", error);
-      }
-    }
-
-    // 6. Save and execute downlad!
-    doc.save("Accessible_Narrative.pdf");
   };
 
   return (
