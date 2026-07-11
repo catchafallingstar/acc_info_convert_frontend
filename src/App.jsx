@@ -97,7 +97,7 @@ function App() {
     try {
       // 1. Send the data to your new Django endpoint
       // Adjust the URL if your Django server runs on a different port/address
-      const response = await fetch('http://localhost:8000/api/generate-pdf/', {
+      const response = await fetch('https://accessible-narrative-backend.onrender.com/api/generate-pdf/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
