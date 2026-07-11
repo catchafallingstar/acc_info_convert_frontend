@@ -11,7 +11,7 @@ function App() {
   const [status, setStatus] = useState('Waiting for an infographic upload...');
   const [result, setResult] = useState('');
   const [imageFormat, setImageFormat] = useState('JPEG');
-  const [base64Image, setBase64Image] = useState(null); 
+  const [base64Image, setBase64Image] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   // 1. Handle when a user selects an image file
   const handleImageUpload = (event) => {
@@ -109,7 +109,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          narrative: result,       
+          narrative: result,
           image: base64Image     // Change this from selectedImage to base64Image
         }),
       });
@@ -148,9 +148,15 @@ function App() {
       </header>
 
       {/* Upload Interface Section */}
+      
       <div style={{ border: '2px dashed #bbb', padding: '30px', borderRadius: '8px', textAlign: 'center', marginBottom: '20px' }}>
-        <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'block', margin: '0 auto 15px auto' }} />
-        <small style={{ color: '#888' }}>Supports PNG, JPG, JPEG, or WEBP graphs</small>
+        <input
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleImageUpload}
+          style={{ display: 'block', margin: '0 auto 15px auto' }}
+        />
+        <small style={{ color: '#888' }}>Supports PNG, JPG, JPEG, WEBP, or PDF graphs</small>
       </div>
 
       {/* Image Preview Box */}
