@@ -11,26 +11,25 @@ function App() {
   const [status, setStatus] = useState('Waiting for an infographic upload...');
   const [result, setResult] = useState('');
   const [imageFormat, setImageFormat] = useState('JPEG');
-  const [base64Image, setBase64Image] = useState(null); // Add this new line
+  const [base64Image, setBase64Image] = useState(null); 
+  const [selectedFile, setSelectedFile] = useState(null);
   // 1. Handle when a user selects an image file
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedFile(file); // Save the raw file for the backend
       setSelectedImage(URL.createObjectURL(file));
 
-      //  Detect the format automatically (e.g., "png", "jpeg", "webp")
-      // We extract the second part of the mime-type and make it uppercase
       const detectedFormat = file.type.split('/')[1]?.toUpperCase() || 'JPEG';
-      // jsPDF expects 'JPEG', not 'JPG'
       setImageFormat(detectedFormat === 'JPG' ? 'JPEG' : detectedFormat);
-      // --- ADDED Convert image to Base64 for the Backend ---
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        setBase64Image(reader.result); // Saves the Base64 string
+        setBase64Image(reader.result);
       };
       reader.readAsDataURL(file);
-      // -------------------------------------------------------------------
-      setStatus('Image loaded. Click the convert button below!');
+
+      setStatus('File loaded. Click the convert button below!');
       setResult('');
     }
   };
