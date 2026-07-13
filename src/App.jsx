@@ -130,7 +130,7 @@ function App() {
   // 3. Helper to download the AI response layout locally
   const handleDownloadPDF = async () => {
     try {
-      const response = await fetch('https://accessible-narrative-backend.onrender.com/api/generate-pdf/', {
+      const response = await fetch('https://accessible-narrative-backend.onrender.com/api/generate-accessible-pdf/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
