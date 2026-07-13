@@ -137,7 +137,8 @@ function App() {
         },
         body: JSON.stringify({
           narrative: result,       
-          image: base64Image     
+          // THE FIX: If it's a PDF, send null so the backend skips the image block entirely
+          image: isPdfUpload ? null : base64Image     
         }),
       });
 
