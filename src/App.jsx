@@ -19,7 +19,7 @@ function App() {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      
+
       // Bulletproof check for PDF
       const isFilePdf = file.type.includes('pdf') || file.name.toLowerCase().endsWith('.pdf');
       setIsPdfUpload(isFilePdf);
@@ -55,7 +55,7 @@ function App() {
       // ==========================================
       if (isPDF) {
         setStatus('PDF detected! Sending directly to secure server for processing...');
-        
+
         const formData = new FormData();
         formData.append('file', selectedFile);
 
@@ -77,7 +77,7 @@ function App() {
         } else {
           throw new Error(data.error || "The Django backend returned an error.");
         }
-      } 
+      }
       // ==========================================
       // PIPELINE 2: IMAGE PROCESSING (TESSERACT)
       // ==========================================
@@ -87,7 +87,7 @@ function App() {
         const tesseractResult = await Tesseract.recognize(
           selectedImage,
           'eng',
-          { logger: (m) => console.log(m) } 
+          { logger: (m) => console.log(m) }
         );
 
         const extractedText = tesseractResult.data.text;
@@ -113,7 +113,7 @@ function App() {
           if (data.generated_text.includes("VALIDATION_ERROR:")) {
             setStatus("Upload Rejected: This image does not appear to be a flowchart or infographic.");
             setResult("Error: The platform requires an infographic, diagram, or flowchart layout to generate a meaningful structural narrative.");
-            return; 
+            return;
           }
           setResult(data.generated_text);
           setStatus('Complete! Accessible structure generated successfully.');
@@ -136,7 +136,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          narrative: result,       
+          narrative: result,
           image: base64Image
           // image: isPdfUpload ? null : base64Image     
         }),
@@ -170,9 +170,20 @@ function App() {
       </header>
 
       {/* Upload Interface Section */}
-      <div style={{ border: '2px dashed #bbb', padding: '30px', borderRadius: '8px', textAlign: 'center', marginBottom: '20px' }}>
-        <input type="file" accept="image/*,application/pdf" onChange={handleImageUpload} style={{ display: 'block', margin: '0 auto 15px auto' }} />
-        <small style={{ color: '#888' }}>Supports PNG, JPG, JPEG, WEBP, or PDF graphs</small>
+      <div className="upload-container">
+        <input
+          id="infographic-upload"
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleImageUpload}
+          className="visually-hidden-input"
+        />
+        <label htmlFor="infographic-upload" className="custom-file-upload">
+          Choose Infographic File
+        </label>
+        <p className="upload-hint">
+          Supports PNG, JPG, JPEG, WEBP, or PDF graphs
+        </p>
       </div>
 
       {/* Image / File Preview Box */}

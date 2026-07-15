@@ -1,23 +1,32 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  /* University of Michigan Brand Colors (Accessible Palette) */
+  --um-blue: #00274c;
+  --um-maize: #ffcb05;
+  
+  /* Theme Variables */
+  --text: #1e293b;            /* Dark Slate (Easy on the eyes, highly readable) */
+  --text-h: var(--um-blue);   /* Michigan Blue for bold headings */
+  --bg: #fcfcfd;              /* Clean, crisp off-white */
+  --border: #d2d7df;          /* Soft slate blue border */
+  --code-bg: #f0f4f8;         /* Light blue-gray for system blocks */
+  
+  /* Highlight / Accent Variables (Strictly compliant contrast) */
+  --accent: var(--um-blue);
+  --accent-bg: #fff9e6;       /* Warm cream background */
+  --accent-border: var(--um-maize);
+  --social-bg: rgba(0, 39, 76, 0.05); /* Soft Blue Tint */
+  
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(0, 39, 76, 0.08) 0 10px 15px -3px, 
+    rgba(0, 39, 76, 0.04) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  /* Typography */
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  font: 18px/150% var(--sans);
+  letter-spacing: 0.15px;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,28 +39,10 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
+/* Base resets & layouts */
 body {
   margin: 0;
+  background-color: var(--bg);
 }
 
 #root {
@@ -60,52 +51,253 @@ body {
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background: #ffffff; /* Contrast booster */
 }
 
-h1,
-h2 {
+/* Accessible & Modern Typography */
+h1, h2 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
+  font-size: 48px;
+  letter-spacing: -1.2px;
+  margin: 40px 0 24px;
+  line-height: 1.15;
   @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+    font-size: 34px;
+    margin: 24px 0 16px;
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
 }
 
-code,
+h2 {
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+  margin: 0 0 12px;
+  @media (max-width: 1024px) {
+    font-size: 18px;
+  }
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Accent Badges / Status Bars */
 .counter {
   font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  /* AAA compliant: Navy Blue text on a warm golden Maize background */
+  color: var(--um-blue);
+  background: var(--um-maize);
+  border: 2px solid var(--um-blue);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 24px;
   display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 39, 76, 0.15);
+  }
+  
+  /* Highly visible focus state for keyboard users */
+  &:focus-visible {
+    outline: 3px solid var(--um-blue);
+    outline-offset: 3px;
+  }
 }
 
 code {
+  font-family: var(--mono);
   font-size: 15px;
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--um-blue);
+}
+
+/* Layout Blocks */
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+  padding: 48px 24px;
+
+  @media (max-width: 1024px) {
+    padding: 32px 20px 24px;
+    gap: 20px;
+  }
+}
+
+#next-steps {
+  display: flex;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  background: #fafbfc; /* subtle color split */
+
+  & > div {
+    flex: 1 1 0;
+    padding: 40px;
+    @media (max-width: 1024px) {
+      padding: 24px 20px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+#docs {
+  border-right: 1px solid var(--border);
+
+  @media (max-width: 1024px) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* Buttons / Links with Accessible Contrast & Interaction States */
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 0;
+
+  a {
+    color: var(--um-blue);
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 8px;
+    background: var(--social-bg);
+    border: 1px solid transparent;
+    display: flex;
+    padding: 8px 16px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background: var(--um-maize);
+      border-color: var(--um-blue);
+      box-shadow: var(--shadow);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--um-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - 12px);
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  background: #fafbfc;
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+/* Accessible Upload Box Container */
+.upload-container {
+  border: 2px dashed #8c96a3; /* Accessible steel-blue border (Contrast compliant) */
+  padding: 40px 30px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: #fafbfc; /* Subtle card background */
+  margin-bottom: 24px;
+  transition: border-color 0.2s ease;
+}
+
+.upload-container:hover {
+  border-color: var(--um-blue); /* Highlights on hover */
+}
+
+/* Visually hides the native browser file button safely */
+.visually-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Premium Michigan Blue Upload Button */
+.custom-file-upload {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff !important; /* Forces white text */
+  background-color: var(--um-blue);
+  border: 2px solid var(--um-blue);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 4px rgba(0, 39, 76, 0.1);
+}
+
+/* Maize Hover State */
+.custom-file-upload:hover {
+  background-color: var(--um-maize);
+  color: var(--um-blue) !important;
+  border-color: var(--um-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 39, 76, 0.15);
+}
+
+/* Highlight style when navigating with Tab on keyboard */
+.visually-hidden-input:focus-visible + .custom-file-upload {
+  outline: 3px solid var(--um-blue);
+  outline-offset: 3px;
+}
+
+/* Compliant Small Text (No more low contrast errors!) */
+.upload-hint {
+  font-size: 14px;
+  color: #4a5568; /* Solid slate-grey that easily passes WCAG AA contrast rules */
+  margin-top: 8px;
+  font-weight: 500;
 }
