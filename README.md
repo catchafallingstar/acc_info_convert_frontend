@@ -58,6 +58,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 ```bash
 git clone [https://github.com/catchafallingstar/acc_info_convert_frontend.git](https://github.com/catchafallingstar/acc_info_convert_frontend.git)
 cd acc_info_convert_frontend
-
-##Backend Repository 
+```
+---
+## Backend Repository 
 Looking for the Django API backend? Check out the Accessible Infographic Converter Backend Repo.
